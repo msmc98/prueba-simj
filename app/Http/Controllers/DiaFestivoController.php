@@ -21,7 +21,8 @@ class DiaFestivoController extends Controller
             'color' => 'required',
             'dia' => 'required',
             'mes' => 'required',
-            'año' => 'required',
+            //si es recurrente no es necesario el año
+            'año' => 'nullable',
             'recurrente' => 'nullable',
 
         ]);
@@ -30,8 +31,8 @@ class DiaFestivoController extends Controller
             'color' => $data['color'],
             'dia' => $data['dia'],
             'mes' => $data['mes'],
-            'año' => $data['año'],
-            'recurrente' => $data['recurrente'] == '1' ? true : false
+            'año' => isset($data['año']) ? $data['año']: null,
+            'recurrente' => isset($data['recurrente']) && $data['recurrente']  == '1' ? true : false
         ]);
         $diasFestivos = DiaFestivo::all();
         return view('dias-festivos.dias-festivos-table', compact('diasFestivos'));

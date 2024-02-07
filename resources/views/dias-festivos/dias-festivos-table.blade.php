@@ -24,7 +24,7 @@
                     <td>{{ $dia->dia }}</td>
                     <td>{{ $dia->mes }}</td>
                     <td>{{ $dia->año }}</td>
-                    <td><input type="checkbox" {{ $dia->recurrente == 1 ? 'checked' : '' }} disabled="true" > {{$dia->recurrente}}</td>
+                    <td><input type="checkbox" {{ $dia->recurrente == 1 ? 'checked' : '' }} disabled="true" > <!--{{$dia->recurrente}}--></td>
 
 
                     <td>
@@ -74,7 +74,7 @@
 
                                     <div class="mb-3">
                                         <label for="año" class="form-label">Año:</label>
-                                        <input type="number" name="año" id="año{{ $dia->id }}" value="{{ $dia->año }}"
+                                        <input type="number" name="año" id="año{{ $dia->id }}" value="{{ $dia->año }}" {{ $dia->recurrente == 1 ? 'disabled' : '' }}
                                             class="form-control">
                                     </div>
 
@@ -90,8 +90,11 @@
                                         document.getElementById('recurrente{{ $dia->id }}').addEventListener('click', function() {
                                             if (this.checked) {
                                                 this.value = 1;
+                                                document.getElementById('año{{ $dia->id }}').disabled = true;
                                             } else {
                                                 this.value = 0;
+                                                document.getElementById('año{{ $dia->id }}').disabled = false;
+                                                document.getElementById('año{{ $dia->id }}').value = new Date().getFullYear();
                                             }
                                         });
                                     </script>
@@ -198,8 +201,10 @@
                             document.getElementById('recurrenteN').addEventListener('click', function() {
                                 if (this.checked) {
                                     this.value = 1;
+                                    document.getElementById('añoN').disabled = true;
                                 } else {
                                     this.value = 0;
+                                    document.getElementById('añoN').disabled = false;
                                 }
                             });
                         </script>

@@ -14,6 +14,8 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "js-year-calendar": "^2.0.0"
+        "jquery": "^3.7.1",
+        "js-year-calendar": "^2.0.0",
+        "popper": "^1.0.1"
     }
 }

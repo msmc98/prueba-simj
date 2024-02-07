@@ -18,65 +18,20 @@
                         data-bs-target="#myModal">Create Event</button> --}}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="myModalLabel">Create Event</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    {{-- <form action="{{ route('events.create') }}" method="POST" id="event-form">
-                                        @csrf
-
-                                        <div class="mb-3">
-                                            <label for="title">Title</label>
-                                            <input type="text" class="form-control" id="title" name="title"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="start">Start Date/Time</label>
-                                            <input type="datetime-local" class="form-control" id="start" name="start"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="end">End Date/Time</label>
-                                            <input type="datetime-local" class="form-control" id="end" name="end"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="type">Type</label>
-                                            <select class="form-select" aria-label="Default select example"
-                                                name="event_type_id" id="type">
-                                                @foreach ($data['types'] as $type)
-                                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Save Event</button>
-                                        </div>
-                                    </form> --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-3" id='calendar'></div>
-            </div>
-
+            <div class="mt-3" id='calendar'></div>
         </div>
     </body>
 
     {{-- importar js-year-calendar --}}
     {{-- <script src="./../../node_modules/js-year-calendar/dist/js-year-calendar.min.js"></script> --}}
     {{-- <script src="https://unpkg.com/js-year-calendar@latest/locales/js-year-calendar.es.js"></script> --}}
+    {{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> --}}
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> --}}
     <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
         async function fetchFest(year = new Date().getFullYear()) {
             const res = await fetch(`/api/dias-festivos?año=${year}`)
             const data = await res.json()
@@ -96,7 +51,19 @@
 
         document.addEventListener('DOMContentLoaded', async function() {
 
-            // let days = await fetchFest()
+            function mostrarEvento(elemento, evento) {
+                // Utiliza Bootstrap Tooltip para mostrar el evento
+                $(elemento).tooltip({
+                    title: evento,
+                    placement: 'top',
+                    trigger: 'manual'
+                }).tooltip('show');
+            }
+
+            function ocultarEvento(elemento) {
+                // Oculta el tooltip al quitar el mouse
+                $(elemento).tooltip('hide');
+            }
 
             let calendar = new Calendar('#calendar', {
                 language: 'es',
@@ -106,7 +73,17 @@
                     let days = await fetchFest(e.currentYear)
                     calendar.setDataSource(days)
                 },
-
+                mouseOnDay: function(e) {
+                    if (e.events.length > 0) {
+                        evento = e.events.map(event => [new Date(event.startDate)
+                            .toLocaleDateString(), event.name
+                        ].join(' → ')).join('<br>')
+                        mostrarEvento(e.element, evento);
+                    }
+                },
+                mouseOutDay: function(e) {
+                    ocultarEvento(e.element);
+                },
             })
         })
     </script>
